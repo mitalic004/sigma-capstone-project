@@ -13,7 +13,7 @@ player = {
 dragon = {
     "HP": 100,
     "ATK": 15,
-    "DEF": 30,
+    "DEF": 20,
 }
 
 
@@ -32,7 +32,22 @@ def main_game(user, enemy):
 
     # Loop for fight
     while fight:
+        # Player Turn
         print("\nIt is your turn.\n")
+
+        # Check buff effect duration
+        if user["Buff_ATK"] != 0:
+            user["Buff_ATK"] -= 1
+            if user["Buff_ATK"] == 0:
+                print("\nYour attack buff has expired.")
+                user["ATK"] = 10
+
+        if user["Buff_DEF"] != 0:
+            user["Buff_DEF"] -= 1
+            if user["Buff_DEF"] == 0:
+                print("\nYour defence buff has expired.")
+                user["DEF"] = 30
+
         print("Choose your action: ")
         action = 0
 
@@ -51,6 +66,25 @@ def main_game(user, enemy):
         if action == 5:
             end = 3
             fight = False
+        # If player chooses action which needs a dice roll
+        elif action == 1:
+            pass
+        elif action == 2:
+            pass
+        # If player chooses action which does not need a dice roll
+        elif action == 3:
+            user["Buff_ATK"] = 2
+            user["ATK"] = 15
+            print(
+                "\nYou have increased your attack by 5 points! This effect lasts for 2 turns.")
+        elif action == 4:
+            user["Buff_DEF"] = 2
+            user["DEF"] = 40
+            print(
+                "\nYou have increased your defence by 10 points! This effect lasts for 2 turns.")
+
+        # Dragon Turn
+        print("\nIt is the dragon's turn.\n")
 
     return end
 
