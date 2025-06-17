@@ -23,10 +23,24 @@ def main_game(user, enemy):
         fight = True
 
     while fight:
-        pass
+        print("\nIt is your turn.\n")
+        print("Choose your action: ")
+        action = 0
+        while action not in [1, 2, 3, 4, 5]:
+            try:
+                action = int(input(
+                    "1. Attack the dragon. \n2. Heal yourself. \n3. Increase your attack for 2 turns. \n4. Increase your defence for 2 turns. \n5. Flee. \n"))
+            except ValueError:
+                action = 0
+
+            if action == 0 or action not in [1, 2, 3, 4, 5]:
+                print("\nThat is not an option. Please enter a valid option.")
+
+    return "TEMP"
 
 
 # Main Game
 print("\n~~~~~~~~~~ Defeat the Dragon ~~~~~~~~~~\n")
 print("You are on a quest to defeat a mighty dragon.")
-print("After a long and difficult journey, it is time for the final battle.\n")
+print("After a long and difficult journey, it is time for the final battle.")
+print(main_game(player, dragon))
