@@ -17,10 +17,9 @@ dragon = {
 }
 
 
-# Display player and dragon status
 def display_status():
     """
-    Displays player and dragon status in a readable format.
+    Display player and dragon status in a readable format.
     """
 
     # Player Status
@@ -37,6 +36,13 @@ def display_status():
     print("========================================")
 
 
+# def dice_roll():
+#     """
+#     Roll a dice for the player and display the result.
+#     """
+#     return random.randint(1, 6)
+
+
 # Loop for the main game
 def main_game():
     """
@@ -46,12 +52,8 @@ def main_game():
     # Set outcome variable to be returned
     end = 0
 
-    # Set condition for continuing fight
-    if player["HP"] != 0 or dragon["HP"] != 0:
-        fight = True
-
     # Loop for fight
-    while fight:
+    while True:
         # Player Turn
         print("\nIt is your turn.\n")
 
@@ -88,22 +90,56 @@ def main_game():
         if action == 5:
             end = 3
             break
-        # If player chooses action which needs a dice roll
+        # Player attacks the dragon
         elif action == 1:
-            pass
+            # Roll dice for player
+            roll = random.randint(1, 6)
+            print(f'\nYou rolled a {roll}.')
+            # Calculate damage
+            dmg = player["ATK"] * roll
+            dmg -= dragon["DEF"]
+            # Display outcome, no damage dealt if less than dragon defence
+            print("\nYou attacked the dragon.")
+            if dmg <= 0:
+                print(
+                    f'The dragon defended itself! You deal no damage, the dragon\'s HP is {dragon["HP"]}.')
+            else:
+                dragon["HP"] -= dmg
+                print(
+                    f'You deal {dmg} damage! The dragon\'s HP is {dragon["HP"]}.')
+        # Player heals themselves
         elif action == 2:
-            pass
-        # If player chooses action which does not need a dice roll
+            if player["HP"] == 100:
+                # Display outcome
+                print("\nYou healed yourself.")
+                print(
+                    f'\nYou are already at max HP! No HP was restored.')
+            else:
+                # Roll dice for player
+                roll = random.randint(1, 6)
+                print(f'\nYou rolled a {roll}.')
+                # Calculate healing, cannot go over max 100 HP
+                heal = roll * 5
+                player["HP"] += heal
+                if player["HP"] > 100:
+                    heal -= player["HP"] - 100
+                    player["HP"] = 100
+                # Display outcome
+                print("\nYou healed yourself.")
+                print(
+                    f'\n{heal} HP was restored! You now have {player["HP"]} HP.')
+        # Player buffs their attack
         elif action == 3:
             player["Buff_ATK"] = 3
             player["ATK"] = 15
             print(
-                "\nYou have increased your attack by 5 points! This effect lasts for 2 turns.")
+                "\nYou increased your attack by 5 points! \nThis effect lasts for 2 turns.")
+        # Player buffs their defence
         elif action == 4:
             player["Buff_DEF"] = 3
             player["DEF"] = 40
             print(
-                "\nYou have increased your defence by 10 points! This effect lasts for 2 turns.")
+                "\nYou increased your defence by 10 points! \nThis effect lasts for 2 turns.")
 
         # Breaks loop if dragon is defeated, player wins
         if dragon["HP"] == 0:
