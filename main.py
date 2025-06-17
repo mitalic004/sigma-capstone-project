@@ -17,17 +17,37 @@ dragon = {
 }
 
 
-# Loop for the main game
-def main_game(user, enemy):
+# Display player and dragon status
+def display_status():
     """
-    The main game which involves the user and enemy taking turns to act.
+    Displays player and dragon status in a readable format.
+    """
+
+    # Player Status
+    print("========================================")
+    print("\n~~~~~ Your Status: ~~~~~~\n")
+    print(
+        f'HP: {player["HP"]} \nATK: {player["ATK"]} \nDEF: {player["DEF"]} \n')
+    print("----------------------------------------")
+
+    # Dragon Status
+    print("\n~~~~~ Dragon's Status: ~~~~~\n")
+    print(
+        f'HP: {dragon["HP"]} \nATK: {dragon["ATK"]} \nDEF: {dragon["DEF"]} \n')
+    print("========================================")
+
+
+# Loop for the main game
+def main_game():
+    """
+    The main game which involves the player and dragon taking turns to act.
     """
 
     # Set outcome variable to be returned
     end = 0
 
     # Set condition for continuing fight
-    if user["HP"] != 0 or enemy["HP"] != 0:
+    if player["HP"] != 0 or dragon["HP"] != 0:
         fight = True
 
     # Loop for fight
@@ -35,20 +55,22 @@ def main_game(user, enemy):
         # Player Turn
         print("\nIt is your turn.\n")
 
+        display_status()
+
         # Check buff effect duration
-        if user["Buff_ATK"] != 0:
-            user["Buff_ATK"] -= 1
-            if user["Buff_ATK"] == 0:
+        if player["Buff_ATK"] != 0:
+            player["Buff_ATK"] -= 1
+            if player["Buff_ATK"] == 0:
                 print("\nYour attack buff has expired.")
-                user["ATK"] = 10
+                player["ATK"] = 10
 
-        if user["Buff_DEF"] != 0:
-            user["Buff_DEF"] -= 1
-            if user["Buff_DEF"] == 0:
+        if player["Buff_DEF"] != 0:
+            player["Buff_DEF"] -= 1
+            if player["Buff_DEF"] == 0:
                 print("\nYour defence buff has expired.")
-                user["DEF"] = 30
+                player["DEF"] = 30
 
-        print("Choose your action: ")
+        print("\nChoose your action: ")
         action = 0
 
         # Loop for validating player input
@@ -73,13 +95,13 @@ def main_game(user, enemy):
             pass
         # If player chooses action which does not need a dice roll
         elif action == 3:
-            user["Buff_ATK"] = 2
-            user["ATK"] = 15
+            player["Buff_ATK"] = 3
+            player["ATK"] = 15
             print(
                 "\nYou have increased your attack by 5 points! This effect lasts for 2 turns.")
         elif action == 4:
-            user["Buff_DEF"] = 2
-            user["DEF"] = 40
+            player["Buff_DEF"] = 3
+            player["DEF"] = 40
             print(
                 "\nYou have increased your defence by 10 points! This effect lasts for 2 turns.")
 
@@ -94,7 +116,7 @@ print("\n~~~~~~~~~~ Defeat the Dragon ~~~~~~~~~~\n")
 print("You are on a quest to defeat a mighty dragon.")
 print("After a long and difficult journey, it is time for the final battle.")
 
-end = main_game(player, dragon)
+end = main_game()
 
 # Display end of fight
 if end == 1:
