@@ -84,10 +84,10 @@ def main_game():
             if action == 0 or action not in [1, 2, 3, 4, 5]:
                 print("\nThat is not an option. Please enter a valid option.")
 
-        # If player chooses to Flee
+        # Breaks loop if player chooses to Flee
         if action == 5:
             end = 3
-            fight = False
+            break
         # If player chooses action which needs a dice roll
         elif action == 1:
             pass
@@ -105,8 +105,18 @@ def main_game():
             print(
                 "\nYou have increased your defence by 10 points! This effect lasts for 2 turns.")
 
+        # Breaks loop if dragon is defeated, player wins
+        if dragon["HP"] == 0:
+            end = 1
+            break
+
         # Dragon Turn
-        print("\nIt is the dragon's turn.\n")
+        print("\nIt is the dragon's turn.")
+
+        # Breaks loop if player is defeated, dragon wins
+        if player["HP"] == 0:
+            end = 2
+            break
 
     return end
 
