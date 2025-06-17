@@ -105,6 +105,9 @@ def main_game():
                     f'The dragon defended itself! You deal no damage, the dragon\'s HP is {dragon["HP"]}.')
             else:
                 dragon["HP"] -= dmg
+                # Set dragon HP to 0 if negative
+                if dragon["HP"] < 0:
+                    dragon["HP"] = 0
                 print(
                     f'You deal {dmg} damage! The dragon\'s HP is {dragon["HP"]}.')
         # Player heals themselves
