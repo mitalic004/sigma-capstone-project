@@ -157,10 +157,8 @@ def main_game():
 
         # Randomise dragon attack, more likely to do less damaging attacks
         action = random.randint(1, 7)
-        print(f'Dragon action: {action}')
         if action < 7:
             roll = random.randint(1, 10)
-            print(f'Dragon roll: {roll}')
             # Calculate damage if dragon attacks
             if action < 4:
                 print("\nThe dragon attacked you with a tail swipe.")
