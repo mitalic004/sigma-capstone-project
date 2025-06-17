@@ -36,11 +36,18 @@ def display_status():
     print("========================================")
 
 
-# def dice_roll():
-#     """
-#     Roll a dice for the player and display the result.
-#     """
-#     return random.randint(1, 6)
+def chara_heal(chara, roll):
+    """
+    Calculates and returns the healing amount for a character.
+    """
+
+    heal = roll * 5
+    chara["HP"] += heal
+    if chara["HP"] > 100:
+        heal -= chara["HP"] - 100
+        chara["HP"] = 100
+
+    return heal
 
 
 # Loop for the main game
@@ -122,11 +129,7 @@ def main_game():
                 roll = random.randint(1, 6)
                 print(f'\nYou rolled a {roll}.')
                 # Calculate healing, cannot go over max 100 HP
-                heal = roll * 5
-                player["HP"] += heal
-                if player["HP"] > 100:
-                    heal -= player["HP"] - 100
-                    player["HP"] = 100
+                heal = chara_heal(player, roll)
                 # Display outcome
                 print("\nYou healed yourself.")
                 print(
@@ -151,6 +154,28 @@ def main_game():
 
         # Dragon Turn
         print("\nIt is the dragon's turn.")
+
+        # Randomise dragon attack, more likely to do less damaging attacks
+        action = random.randint(1, 7)
+        if action < 4:
+            print("\nThe dragon attacked you.")
+        elif action < 6:
+            print("\nThe dragon attacked you.")
+        elif action == 6:
+            print("\nThe dragon attacked you.")
+        else:
+            print("\nThe dragon healed itself.")
+            if dragon["HP"] == 100:
+                # Display outcome
+                print(
+                    f'\nThe dragon was already at max HP! No HP was restored.')
+            else:
+                # Calculate healing, cannot go over max 100 HP
+                roll = random.randint(1, 6)
+                heal = chara_heal(dragon, roll)
+                # Display outcome
+                print(
+                    f'\nThe dragon restored {heal} HP! The dragon now has {dragon["HP"]} HP.')
 
         # Breaks loop if player is defeated, dragon wins
         if player["HP"] == 0:
