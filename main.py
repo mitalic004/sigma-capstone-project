@@ -4,7 +4,7 @@ import random
 player = {
     "HP": 100,
     "ATK": 10,
-    "DEF": 30,
+    "DEF": 20,
     "Buff_ATK": 0,
     "Buff_DEF": 0
 }
@@ -12,7 +12,7 @@ player = {
 # Set Dragon stats
 dragon = {
     "HP": 100,
-    "ATK": 15,
+    "ATK": 25,
     "DEF": 20,
 }
 
@@ -109,14 +109,14 @@ def main_game():
             print("\nYou attacked the dragon.")
             if dmg <= 0:
                 print(
-                    f'The dragon defended itself! You deal no damage, the dragon\'s HP is {dragon["HP"]}.')
+                    f'The dragon defended itself! You dealt no damage.')
             else:
                 dragon["HP"] -= dmg
                 # Set dragon HP to 0 if negative
                 if dragon["HP"] < 0:
                     dragon["HP"] = 0
                 print(
-                    f'You deal {dmg} damage! The dragon\'s HP is {dragon["HP"]}.')
+                    f'You dealt {dmg} damage! The dragon\'s HP is {dragon["HP"]}.')
         # Player heals themselves
         elif action == 2:
             if player["HP"] == 100:
@@ -157,12 +157,33 @@ def main_game():
 
         # Randomise dragon attack, more likely to do less damaging attacks
         action = random.randint(1, 7)
-        if action < 4:
-            print("\nThe dragon attacked you.")
-        elif action < 6:
-            print("\nThe dragon attacked you.")
-        elif action == 6:
-            print("\nThe dragon attacked you.")
+        print(f'Dragon action: {action}')
+        if action < 7:
+            roll = random.randint(1, 10)
+            print(f'Dragon roll: {roll}')
+            # Calculate damage if dragon attacks
+            if action < 4:
+                print("\nThe dragon attacked you with a tail swipe.")
+                dmg = dragon["ATK"] + roll
+            elif action < 6:
+                print("\nThe dragon attacked you with a claw scratch.")
+                dmg = dragon["ATK"] + roll * 2
+            elif action == 6:
+                print("\nThe dragon attacked you with fire breath.")
+                dmg = dragon["ATK"] + roll * 3
+
+            # Display outcome, no damage dealt if less than player defence
+            dmg -= player["DEF"]
+            if dmg <= 0:
+                print(
+                    f'You defended yourself! The dragon dealt no damage.')
+            else:
+                player["HP"] -= dmg
+                # Set dragon HP to 0 if negative
+                if player["HP"] < 0:
+                    player["HP"] = 0
+                print(
+                    f'The dragon dealt {dmg} damage! Your HP is {player["HP"]}.')
         else:
             print("\nThe dragon healed itself.")
             if dragon["HP"] == 100:
