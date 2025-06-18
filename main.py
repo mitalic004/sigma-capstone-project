@@ -3,6 +3,7 @@ import random
 # Set Player stats
 player = {
     "HP": 100,
+    "Max_HP": 100,
     "ATK": 10,
     "DEF": 20,
     "Buff_ATK": 0,
@@ -11,7 +12,8 @@ player = {
 
 # Set Dragon stats
 dragon = {
-    "HP": 100,
+    "HP": 200,
+    "Max_HP": 200,
     "ATK": 25,
     "DEF": 20,
 }
@@ -43,9 +45,9 @@ def chara_heal(chara, roll):
 
     heal = roll * 5
     chara["HP"] += heal
-    if chara["HP"] > 100:
-        heal -= chara["HP"] - 100
-        chara["HP"] = 100
+    if chara["HP"] > chara["Max_HP"]:
+        heal -= chara["HP"] - chara["Max_HP"]
+        chara["HP"] = chara["Max_HP"]
 
     return heal
 
@@ -86,7 +88,7 @@ def main_game():
         while action not in [1, 2, 3, 4, 5]:
             try:
                 action = int(input(
-                    "1. Attack the dragon. \n2. Heal yourself. \n3. Increase your attack for 2 turns. \n4. Increase your defence for 2 turns. \n5. Flee. \n"))
+                    "1. Attack the dragon. \n2. Heal yourself. \n3. Increase your attack for 3 turns. \n4. Increase your defence for 3 turns. \n5. Flee. \n"))
             except ValueError:
                 action = 0
 
@@ -136,16 +138,16 @@ def main_game():
                     f'\n{heal} HP was restored! You now have {player["HP"]} HP.')
         # Player buffs their attack
         elif action == 3:
-            player["Buff_ATK"] = 3
+            player["Buff_ATK"] = 4
             player["ATK"] = 15
             print(
-                "\nYou increased your attack by 5 points! \nThis effect lasts for 2 turns.")
+                "\nYou increased your attack by 5 points! \nThis effect lasts for 3 turns.")
         # Player buffs their defence
         elif action == 4:
-            player["Buff_DEF"] = 3
+            player["Buff_DEF"] = 4
             player["DEF"] = 40
             print(
-                "\nYou increased your defence by 10 points! \nThis effect lasts for 2 turns.")
+                "\nYou increased your defence by 10 points! \nThis effect lasts for 3 turns.")
 
         # Breaks loop if dragon is defeated, player wins
         if dragon["HP"] == 0:
@@ -213,8 +215,8 @@ end = main_game()
 
 # Display end of fight
 if end == 1:
-    print("\nYou won! You have defeated the dragon.")
+    print("\nYou won! You have defeated the dragon.\n")
 elif end == 2:
-    print("\nYou lost. The dragon has defeated you.")
+    print("\nYou lost. The dragon has defeated you.\n")
 elif end == 3:
-    print("\nYou... fled? The dragon was confused. No one was defeated.")
+    print("\nYou... fled? The dragon was confused. No one was defeated.\n")
