@@ -278,8 +278,12 @@ def dragon_atk():
             # Set character HP to 0 if negative
             if chara["HP"] < 0:
                 chara["HP"] = 0
-            print(
-                f'The dragon dealt {dmg} damage to {chara["Name"]}! Their HP is {chara["HP"]}.')
+                print(
+                    f'The dragon dealt {dmg} damage to {chara["Name"]}! {chara["Name"]} has fallen!')
+                party -= chara
+            else:
+                print(
+                    f'The dragon dealt {dmg} damage to {chara["Name"]}! Their HP is {chara["HP"]}.')
 
 
 def chara_buff(chara):
