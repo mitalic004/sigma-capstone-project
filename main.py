@@ -1,12 +1,28 @@
 import random
 
-# Set Player stats
-player = {
+# Set Knight stats
+knight = {
     "HP": 100,
     "Max_HP": 100,
     "ATK": 10,
     "DEF": 20,
-    "Buff_ATK": 0,
+}
+
+# Set Mage stats
+mage = {
+    "HP": 100,
+    "Max_HP": 100,
+    "ATK": 8,
+    "DEF": 15,
+    "Buff_ATK": 0
+}
+
+# Set Warrior stats
+warrior = {
+    "HP": 100,
+    "Max_HP": 100,
+    "ATK": 5,
+    "DEF": 25,
     "Buff_DEF": 0
 }
 
@@ -17,6 +33,9 @@ dragon = {
     "ATK": 25,
     "DEF": 20,
 }
+
+# Set Party list
+party = [knight, mage, warrior]
 
 
 def display_status():
