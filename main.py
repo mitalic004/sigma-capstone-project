@@ -65,19 +65,162 @@ def display_status():
         f'HP: {dragon["HP"]} \nATK: {dragon["ATK"]} \nDEF: {dragon["DEF"]} \n')
     print("========================================")
 
+# Character Action Functions
+
+
+def party_luck(roll):
+    """
+    Check if party luck is buffed and add to character roll.
+    """
+
+    if mage["LUCK"] != 0:
+        print(f'Luck boost is active!')
+        roll += mage["LUCK"]
+
+    return roll
+
 
 def chara_heal(chara, roll):
     """
-    Calculate and return the healing amount for a character.
+    Calculate and return the healing amount for characters.
     """
 
+    # Roll dice for character
+    roll = random.randint(1, 6)
+    print(f'\n{chara["Name"]} rolled a {roll}.')
     heal = roll * 5
-    chara["HP"] += heal
-    if chara["HP"] > chara["Max_HP"]:
-        heal -= chara["HP"] - chara["Max_HP"]
-        chara["HP"] = chara["Max_HP"]
+    heal_list = []
 
-    return heal
+    # Checks which character is healing
+    if chara == dragon:
+        heal_list += dragon
+    else:
+        # Mage heals all characters in the party
+        heal_list += party
+
+    # Calculates healing for characters
+    for ch in heal_list:
+        if ch["HP"] == ch["Max_HP"]:
+            # Display outcome if character is already at max hp
+            print(f'\n{chara["Name"]} healed {ch["Name"]}.')
+            print(
+                f'\n{ch["Name"]} is already at max HP! No HP was restored.')
+        else:
+            # Calculate healing, cannot go over max HP
+            ch["HP"] += heal
+            if ch["HP"] > ch["Max_HP"]:
+                heal -= ch["HP"] - ch["Max_HP"]
+                ch["HP"] = ch["Max_HP"]
+
+            # Display outcome
+            print(f'\n{chara["Name"]} healed {ch["Name"]}.')
+            print(
+                f'\n {ch["Name"]} restored {heal} HP! {ch["Name"]} now has {ch["HP"]} HP.')
+
+
+def party_atk(chara):
+    """
+    Calculate and return damage for a basic attack done by one of the party members.
+    """
+
+    # Roll dice for character
+    roll = random.randint(1, 6)
+    print(f'\n{chara["Name"]} rolled a {roll}.')
+    roll = party_luck(roll)
+
+    # Calculate damage
+    dmg = chara["ATK"] * roll
+
+    return dmg
+
+
+def knight_atk():
+    """
+    Calculate and return damage for a special attack done by Knight.
+    """
+
+    # Roll dice for character
+    roll = random.randint(1, 6)
+    print(f'\n{knight["Name"]} rolled a {roll}.')
+    roll = party_luck(roll)
+
+    # Calculate damage
+    dmg = (knight["ATK"] + 5) * roll
+
+    return dmg
+
+
+def warrior_atk():
+    """
+    Calculate and return damage for a special attack done by Warrior.
+    """
+
+    # Roll dice for character
+    roll = random.randint(1, 6)
+    print(f'\n{warrior["Name"]} rolled a {roll}.')
+    roll = party_luck(roll)
+
+    # Calculate damage
+    dmg = warrior["DEF"] + (roll * 10)
+
+    return dmg
+
+
+def chara_buff(chara):
+    """
+    Check and updates buff duration for a character.
+    """
+
+    # Check Knight buff effect duration
+    if chara == knight:
+        if knight["Buff_ATK"] != 0:
+            knight["Buff_ATK"] -= 1
+            if knight["Buff_ATK"] == 0:
+                print(f'\n{knight["Name"]}\'s attack buff has expired.')
+                knight["ATK"] = 10
+
+    # Check Warrior buff effect duration
+    if chara == warrior:
+        if warrior["Buff_DEF"] != 0:
+            warrior["Buff_DEF"] -= 1
+            if warrior["Buff_DEF"] == 0:
+                print(f'\n{warrior["Name"]}\'s defence buff has expired.')
+                warrior["DEF"] = 25
+
+    # Check Mage buff effect duration
+    if chara == mage:
+        if mage["Buff_LUCK"] != 0:
+            mage["Buff_LUCK"] -= 1
+            if mage["Buff_LUCK"] == 0:
+                print(f'\n{mage["Name"]}\'s luck buff has expired.')
+                mage["LUCK"] = 0
+
+
+def add_buff(chara):
+    """
+    Applies a buff depending on the character.
+    """
+
+    # Knight buffs their attack
+    if chara == knight:
+        knight["Buff_ATK"] = 3
+        knight["ATK"] = 15
+        print(
+            f'\n{knight["Name"]} increased their attack by 5 points! \nThis effect lasts for 2 turns.')
+
+    # Warrior buffs their defence
+    if chara == warrior:
+        warrior["Buff_DEF"] = 3
+        warrior["DEF"] = 30
+        print(
+            f'\n{warrior["Name"]} increased their defence by 5 points! \nThis effect lasts for 2 turns.')
+
+    # Mage buffs party luck
+    if chara == mage:
+        mage["Buff_LUCK"] = 3
+        mage["LUCK"] = 3
+        print(
+            f'\n{mage["Name"]} increased the party\'s luck by 3 points! \nThis effect lasts for 2 turns. \n{mage["Name"]} will skip their next turn.')
 
 
 # Loop for the main game
@@ -173,10 +316,9 @@ def main_game():
         # Player buffs their defence
         elif action == 4:
             player["Buff_DEF"] = 3
-            player["DEF"] = 40
+            player["DEF"] = 30
             print(
                 "\nYou increased your defence by 10 points! \nThis effect lasts for 3 turns.")
-
         # Breaks loop if dragon is defeated, player wins
         if dragon["HP"] == 0:
             end = 1
