@@ -339,6 +339,31 @@ def add_buff(chara):
             f'\n{mage["Name"]} used Fortune\'s Favour! \n{mage["Name"]} increased the party\'s luck by 3 points! \nThis effect lasts for 2 turns. \n{mage["Name"]} will skip their next turn.')
 
 
+def flee(chara):
+    print(f'{chara["Name"]} has fled the battle!')
+    party -= chara
+    if len(party) == 0:
+        end = 3
+
+# Character Turns
+
+
+def knight_turn():
+    pass
+
+
+def warrior_turn():
+    pass
+
+
+def mage_turn():
+    pass
+
+
+def dragon_turn():
+    pass
+
+
 # Loop for the main game
 def main_game():
     """
@@ -350,8 +375,8 @@ def main_game():
 
     # Loop for fight
     while True:
-        # Player Turn
-        print("\nIt is your turn.\n")
+        # Party Turn
+        print("\nIt is the party's turn.\n")
 
         display_status()
 
@@ -494,15 +519,15 @@ def main_game():
 
 # Main Game
 print("\n~~~~~~~~~~~~~~~ Defeat the Dragon ~~~~~~~~~~~~~~~\n")
-print("You are on a quest to defeat a mighty dragon.")
+print("A party of brave adventurers are on a quest to defeat a mighty dragon.")
 print("After a long and difficult journey, it is time for the final battle.")
 
 end = main_game()
 
 # Display end of fight
 if end == 1:
-    print("\nYou won! You have defeated the dragon.\n")
+    print("\nThe party won! The party has defeated the dragon.\n")
 elif end == 2:
-    print("\nYou lost. The dragon has defeated you.\n")
+    print("\nThe party lost. The dragon has defeated the party.\n")
 elif end == 3:
-    print("\nYou... fled? The dragon was confused. No one was defeated.\n")
+    print("\nThe party... fled? The dragon was confused.\n")
