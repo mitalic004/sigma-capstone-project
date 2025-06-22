@@ -2,50 +2,59 @@ import random
 
 # Set Knight stats
 knight = {
+    "Name": "Knight",
     "HP": 100,
     "Max_HP": 100,
     "ATK": 10,
     "DEF": 20,
-}
-
-# Set Mage stats
-mage = {
-    "HP": 100,
-    "Max_HP": 100,
-    "ATK": 8,
-    "DEF": 15,
-    "Buff_ATK": 0
+    "Buff_ATK": 0,
+    "Actions": ["1. Attack the dragon.", "2. Special Attack.", "3. Increase own attack for 2 turns.", "4. Flee."]
 }
 
 # Set Warrior stats
 warrior = {
+    "Name": "Warrior",
     "HP": 100,
     "Max_HP": 100,
     "ATK": 5,
     "DEF": 25,
-    "Buff_DEF": 0
+    "Buff_DEF": 0,
+    "Actions": ["1. Attack the dragon.", "2. Special Attack.", "3. Taunt dragon and increase defence for 2 turns.", "4. Flee."]
+}
+
+# Set Mage stats
+mage = {
+    "Name": "Mage",
+    "HP": 100,
+    "Max_HP": 100,
+    "ATK": 8,
+    "DEF": 15,
+    "LUCK": 0,
+    "Buff_LUCK": 0,
+    "Actions": ["1. Attack the dragon.", "2. Heal the party.", "3. Increase the party's luck for 2 turns. (Skip next turn.)", "4. Flee."]
 }
 
 # Set Dragon stats
 dragon = {
-    "HP": 200,
-    "Max_HP": 200,
+    "Name": "Dragon",
+    "HP": 1000,
+    "Max_HP": 1000,
     "ATK": 25,
-    "DEF": 20,
+    "DEF": 25,
 }
 
 # Set Party list
-party = [knight, mage, warrior]
+party = [knight, warrior, mage]
 
 
 def display_status():
     """
-    Display player and dragon status in a readable format.
+    Display party and dragon status in a readable format.
     """
 
-    # Player Status
+    # Party Status
     print("========================================")
-    print("\n~~~~~ Your Status: ~~~~~~\n")
+    print("\n~~~~~ Party Status: ~~~~~~\n")
     print(
         f'HP: {player["HP"]} \nATK: {player["ATK"]} \nDEF: {player["DEF"]} \n')
     print("----------------------------------------")
@@ -59,7 +68,7 @@ def display_status():
 
 def chara_heal(chara, roll):
     """
-    Calculates and returns the healing amount for a character.
+    Calculate and return the healing amount for a character.
     """
 
     heal = roll * 5
@@ -157,13 +166,13 @@ def main_game():
                     f'\n{heal} HP was restored! You now have {player["HP"]} HP.')
         # Player buffs their attack
         elif action == 3:
-            player["Buff_ATK"] = 4
+            player["Buff_ATK"] = 3
             player["ATK"] = 15
             print(
                 "\nYou increased your attack by 5 points! \nThis effect lasts for 3 turns.")
         # Player buffs their defence
         elif action == 4:
-            player["Buff_DEF"] = 4
+            player["Buff_DEF"] = 3
             player["DEF"] = 40
             print(
                 "\nYou increased your defence by 10 points! \nThis effect lasts for 3 turns.")
