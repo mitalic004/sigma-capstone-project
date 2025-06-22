@@ -8,7 +8,7 @@ knight = {
     "ATK": 10,
     "DEF": 20,
     "Buff_ATK": 0,
-    "Actions": ["1. Attack the dragon.", "2. Special Attack.", "3. Increase own attack for 2 turns.", "4. Flee."]
+    "Actions": ["1. Attack the dragon.", "2. True Strike (Special Attack).", "3. Increase attack for 2 turns.", "4. Flee."]
 }
 
 # Set Warrior stats
@@ -19,7 +19,7 @@ warrior = {
     "ATK": 5,
     "DEF": 25,
     "Buff_DEF": 0,
-    "Actions": ["1. Attack the dragon.", "2. Special Attack.", "3. Taunt dragon and increase defence for 2 turns.", "4. Flee."]
+    "Actions": ["1. Attack the dragon.", "2. Berserk Charge. (Special Attack)", "3. Taunt the dragon and increase defence for 2 turns.", "4. Flee."]
 }
 
 # Set Mage stats
@@ -66,7 +66,7 @@ def display_status():
             party_stats_atk += f'ATK: {ch["ATK"]}'
             party_stats_def += f'DEF: {ch["DEF"]}'
         else:
-            party_stats_charas += f' {ch["Name"]}\t|'
+            party_stats_chara += f' {ch["Name"]}\t|'
             party_stats_hp += f' HP: {ch["HP"]}\t|'
             party_stats_atk += f' ATK: {ch["ATK"]}\t|'
             party_stats_def += f' DEF: {ch["DEF"]}\t|'
@@ -124,15 +124,16 @@ def chara_heal(chara, roll):
     # Checks which character is healing
     if chara == dragon:
         heal_list += dragon
+        print(f'\n{chara["Name"]} healed itself.')
     else:
         # Mage heals all characters in the party
         heal_list += party
+        print(f'\n{chara["Name"]} healed the party.')
 
     # Calculates healing for characters
     for ch in heal_list:
         if ch["HP"] == ch["Max_HP"]:
             # Display outcome if character is already at max hp
-            print(f'\n{chara["Name"]} healed {ch["Name"]}.')
             print(
                 f'\n{ch["Name"]} is already at max HP! No HP was restored.')
         else:
@@ -143,7 +144,6 @@ def chara_heal(chara, roll):
                 ch["HP"] = ch["Max_HP"]
 
             # Display outcome
-            print(f'\n{chara["Name"]} healed {ch["Name"]}.')
             print(
                 f'\n {ch["Name"]} restored {heal} HP! {ch["Name"]} now has {ch["HP"]} HP.')
 
@@ -160,8 +160,29 @@ def party_atk(chara):
 
     # Calculate damage
     dmg = chara["ATK"] * roll
+    dmg -= dragon["DEF"]
+
+    print(f'\n{chara["Name"]} attacked the dragon.')
 
     return dmg
+
+
+def party_damage(chara, dmg):
+    """
+    Display damage dealt to Dragon by one of the party members.
+    """
+
+    # Display outcome, no damage dealt if less than dragon defence
+    if dmg <= 0:
+        print(
+            f'The dragon defended itself! {chara["Name"]} dealt no damage.')
+    else:
+        dragon["HP"] -= dmg
+        # Set dragon HP to 0 if negative
+        if dragon["HP"] < 0:
+            dragon["HP"] = 0
+        print(
+            f'{chara["Name"]} dealt {dmg} damage! The dragon\'s HP is {dragon["HP"]}.')
 
 
 def knight_atk():
@@ -176,6 +197,9 @@ def knight_atk():
 
     # Calculate damage
     dmg = (knight["ATK"] + 5) * roll
+    dmg -= dragon["DEF"]
+
+    print(f'\n{knight["Name"]} used True Strike to attack the dragon.')
 
     return dmg
 
@@ -192,8 +216,70 @@ def warrior_atk():
 
     # Calculate damage
     dmg = warrior["DEF"] + (roll * 10)
+    dmg -= dragon["DEF"]
+
+    print(f'\n{warrior["Name"]} used Berserk Charge to attack the dragon.')
 
     return dmg
+
+
+def dragon_target():
+    """
+    Calculates which party member to target during a dragon attack.
+    """
+
+    if warrior["Buff_DEF"] != 0:
+        target = random.randint(1, 5)
+    else:
+        target = random.randint(1, 3)
+
+    if target == 1:
+        target_chara = knight
+    elif target == 2:
+        target_chara = mage
+    else:
+        target_chara = warrior
+
+    return target_chara
+
+
+def dragon_atk():
+    """
+    Calculate and return damage for all attacks from Dragon.
+    """
+
+    # Randomise dragon attack, more likely to do less damaging attacks
+    action = random.randint(1, 6)
+    roll = random.randint(1, 10)
+    party_hit = []
+    # Calculate damage if dragon attacks
+    if action < 4:
+        party_hit += party
+        print("\nThe dragon attacked the party with a tail swipe.")
+        dmg = dragon["ATK"] + roll
+    elif action < 6:
+        party_hit += dragon_target()
+        print(
+            f'\nThe dragon attacked {party_hit[0]["Name"]} with a claw scratch.')
+        dmg = dragon["ATK"] + roll * 2
+    elif action == 6:
+        party_hit += party
+        print("\nThe dragon attacked the party with fire breath.")
+        dmg = dragon["ATK"] + roll * 3
+
+    # Display outcome, no damage dealt if less than character defence
+    for chara in party_hit:
+        dmg -= chara["DEF"]
+        if dmg <= 0:
+            print(
+                f'{chara["Name"]} defended against the attack! The dragon dealt no damage.')
+        else:
+            chara["HP"] -= dmg
+            # Set character HP to 0 if negative
+            if chara["HP"] < 0:
+                chara["HP"] = 0
+            print(
+                f'The dragon dealt {dmg} damage to {chara["Name"]}! Their HP is {chara["HP"]}.')
 
 
 def chara_buff(chara):
@@ -236,27 +322,27 @@ def add_buff(chara):
         knight["Buff_ATK"] = 3
         knight["ATK"] = 15
         print(
-            f'\n{knight["Name"]} increased their attack by 5 points! \nThis effect lasts for 2 turns.')
+            f'\n{knight["Name"]} used Blessed Sword! \n{knight["Name"]} increased their attack by 5 points! \nThis effect lasts for 2 turns.')
 
     # Warrior buffs their defence
     if chara == warrior:
         warrior["Buff_DEF"] = 3
         warrior["DEF"] = 30
         print(
-            f'\n{warrior["Name"]} increased their defence by 5 points! \nThis effect lasts for 2 turns.')
+            f'\n{warrior["Name"]} used Stalwart Guardian! \n{warrior["Name"]} taunted the dragon and increased their defence by 5 points! \nThis effect lasts for 2 turns.')
 
     # Mage buffs party luck
     if chara == mage:
         mage["Buff_LUCK"] = 3
         mage["LUCK"] = 3
         print(
-            f'\n{mage["Name"]} increased the party\'s luck by 3 points! \nThis effect lasts for 2 turns. \n{mage["Name"]} will skip their next turn.')
+            f'\n{mage["Name"]} used Fortune\'s Favour! \n{mage["Name"]} increased the party\'s luck by 3 points! \nThis effect lasts for 2 turns. \n{mage["Name"]} will skip their next turn.')
 
 
 # Loop for the main game
 def main_game():
     """
-    The main game which involves the player and dragon taking turns to act.
+    The main game which involves the party and dragon taking turns to act.
     """
 
     # Set outcome variable to be returned
@@ -286,7 +372,7 @@ def main_game():
         action = 0
 
         # Loop for validating player input
-        while action not in [1, 2, 3, 4, 5]:
+        while action not in [1, 2, 3, 4]:
             try:
                 action = int(input(
                     "1. Attack the dragon. \n2. Heal yourself. \n3. Increase your attack for 3 turns. \n4. Increase your defence for 3 turns. \n5. Flee. \n"))
@@ -300,7 +386,7 @@ def main_game():
         if action == 5:
             end = 3
             break
-        # Player attacks the dragon
+        # Player attacks Dragon
         elif action == 1:
             # Roll dice for player
             roll = random.randint(1, 6)
@@ -407,7 +493,7 @@ def main_game():
 
 
 # Main Game
-print("\n~~~~~~~~~~ Defeat the Dragon ~~~~~~~~~~\n")
+print("\n~~~~~~~~~~~~~~~ Defeat the Dragon ~~~~~~~~~~~~~~~\n")
 print("You are on a quest to defeat a mighty dragon.")
 print("After a long and difficult journey, it is time for the final battle.")
 
