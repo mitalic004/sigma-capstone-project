@@ -53,10 +53,23 @@ def display_status():
     """
 
     # Party Status
-    party_stats_charas = " Knight\t |  Warrior\t |  Mage"
-    party_stats_hp = f' HP: {knight["HP"]}\t |  HP: {warrior["HP"]}\t |  HP: {mage["HP"]}'
-    party_stats_atk = f' ATK: {knight["ATK"]}\t |  ATK: {warrior["ATK"]}\t |  ATK: {mage["ATK"]}'
-    party_stats_def = f' DEF: {knight["DEF"]}\t |  DEF: {warrior["DEF"]}\t |  DEF: {mage["DEF"]}'
+    party_stats_chara = ""
+    party_stats_hp = ""
+    party_stats_atk = ""
+    party_stats_def = ""
+
+    # Adds all characters in party to display
+    for ch in party:
+        if ch is party[-1]:
+            party_stats_chara += ch["Name"]
+            party_stats_hp += f'HP: {ch["HP"]}'
+            party_stats_atk += f'ATK: {ch["ATK"]}'
+            party_stats_def += f'DEF: {ch["DEF"]}'
+        else:
+            party_stats_charas += f' {ch["Name"]}\t|'
+            party_stats_hp += f' HP: {ch["HP"]}\t|'
+            party_stats_atk += f' ATK: {ch["ATK"]}\t|'
+            party_stats_def += f' DEF: {ch["DEF"]}\t|'
 
     # Calculate width and generate separating lines
     width = len(party_stats_hp)
@@ -68,7 +81,7 @@ def display_status():
     # Display Party Status
     # print(separator)
     print("==".center(width, "=") + "\n")
-    print(" Party Status ".center(width, "~") + "\n")
+    print("~ Party Status ~".center(width, "~") + "\n")
     print(party_stats_hp)
     print(party_stats_atk)
     print(party_stats_def + "\n")
@@ -76,7 +89,7 @@ def display_status():
 
     # Display Dragon Status
     dragon_stats = f' HP: {dragon["HP"]} \n ATK: {dragon["ATK"]} \n DEF: {dragon["DEF"]} \n'
-    print(" Dragon Status ".center(len(dragon_stats), "~") + "\n")
+    print("~ Dragon Status ~".center(len(dragon_stats), "~") + "\n")
     print(dragon_stats + "\n")
     # print(separator)
     print("==".center(width, "=") + "\n")
