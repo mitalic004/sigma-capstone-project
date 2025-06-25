@@ -343,8 +343,6 @@ def flee(chara):
     print(f"\n{chara["Name"]} has fled the battle!")
     global party
     party.remove(chara)
-    if len(party) == 0:
-        end = 3
 
 
 # Character Turns
@@ -440,9 +438,15 @@ def main_game():
         # Party Turn
         party_turn()
 
+        # Breaks loop if party has fled
+        if not party:
+            end = 3
+            break
+
         # Breaks loop if dragon is defeated, player wins
         if dragon["HP"] == 0:
             end = 1
+            break
 
         # Dragon Turn
         dragon_turn()
@@ -450,6 +454,7 @@ def main_game():
         # Breaks loop if party is defeated, dragon wins
         if not party:
             end = 2
+            break
 
     return end
 
