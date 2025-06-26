@@ -369,13 +369,13 @@ def add_cooldown(chara):
 
     # Knight uses special attack
     if chara == knight:
-        knight['Cooldown'] = 2
+        knight['Cooldown'] = 3
         print(
             f"\n{knight['Name']}'s special attack is on cooldown for 2 turns.")
 
     # Warrior uses special attack
     if chara == warrior:
-        warrior['Cooldown'] = 2
+        warrior['Cooldown'] = 3
         print(
             f"\n{warrior['Name']}'s special attack is on cooldown for 2 turns.")
 
