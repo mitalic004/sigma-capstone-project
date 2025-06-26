@@ -8,7 +8,8 @@ knight = {
     "ATK": 10,
     "DEF": 20,
     "Buff_ATK": 0,
-    "Actions": ["1. Attack the dragon.", "2. True Strike (Special Attack).", "3. Increase attack for 2 turns.", "4. Flee."]
+    "Cooldown": 0,
+    "Actions": ["1. Attack the dragon.", "2. True Strike (Special Attack, 2 turn cooldown).", "3. Increase attack for 2 turns.", "4. Flee."]
 }
 
 # Set Warrior stats
@@ -19,7 +20,8 @@ warrior = {
     "ATK": 5,
     "DEF": 25,
     "Buff_DEF": 0,
-    "Actions": ["1. Attack the dragon.", "2. Berserk Charge. (Special Attack)", "3. Taunt the dragon and increase defence for 2 turns.", "4. Flee."]
+    "Cooldown": 0,
+    "Actions": ["1. Attack the dragon.", "2. Berserk Charge. (Special Attack, 2 turn cooldown)", "3. Taunt the dragon and increase defence for 2 turns.", "4. Flee."]
 }
 
 # Set Mage stats
@@ -287,29 +289,70 @@ def chara_buff(chara):
     Check and updates buff duration for a character.
     """
 
-    # Check Knight buff effect duration
+    # Check Knight buff effect duration & special attack cooldown
     if chara == knight:
         if knight["Buff_ATK"] != 0:
             knight["Buff_ATK"] -= 1
             if knight["Buff_ATK"] == 0:
-                print(f"\n{knight["Name"]}'s attack buff has expired.")
                 knight["ATK"] = 10
+                return 1
+            else:
+                return 0
 
-    # Check Warrior buff effect duration
+        if knight["Cooldown"] != 0:
+            knight["Cooldown"] -= 1
+            if knight["Cooldown"] == 0:
+                return 2
+            else:
+                return 0
+
+    # Check Warrior buff effect duration & special attack cooldown
     if chara == warrior:
         if warrior["Buff_DEF"] != 0:
             warrior["Buff_DEF"] -= 1
             if warrior["Buff_DEF"] == 0:
-                print(f"\n{warrior["Name"]}'s defence buff has expired.")
                 warrior["DEF"] = 25
+                return 1
+            else:
+                return 0
+
+        if warrior["Cooldown"] != 0:
+            warrior["Cooldown"] -= 1
+            if warrior["Cooldown"] == 0:
+                return 2
+            else:
+                return 0
 
     # Check Mage buff effect duration
     if chara == mage:
         if mage["Buff_LUCK"] != 0:
             mage["Buff_LUCK"] -= 1
             if mage["Buff_LUCK"] == 0:
-                print(f"\n{mage["Name"]}'s luck buff has expired.")
                 mage["LUCK"] = 0
+                return 1
+            else:
+                return 0
+
+
+def buff_message(chara, check):
+    """
+    Displays message to inform player of character buff or cooldown expiring
+    """
+
+    # Display message for buff expiring
+    if check == 1:
+        if chara == knight:
+            print(f"\n{chara["Name"]}'s attack buff has expired.")
+
+        if chara == warrior:
+            print(f"\n{chara["Name"]}'s defence buff has expired.")
+        
+        if chara == mage:
+            print(f"\n{chara["Name"]}'s luck buff has expired.")
+
+    # Display message for cooldown expiring
+    if check == 2:
+        print(f"\n{chara["Name"]}'s special attack is off cooldown and can be used.")
 
 
 def add_buff(chara):
@@ -336,10 +379,33 @@ def add_buff(chara):
         mage["Buff_LUCK"] = 3
         mage["LUCK"] = 3
         print(
-            f"\n{mage["Name"]} used Fortune's Favour! \n{mage["Name"]} increased the party's luck by 3 points! \nThis effect lasts for 2 turns. \n{mage["Name"]} will skip their next turn.")
+            f"\n{mage["Name"]} used Fortune's Favour! \n{mage["Name"]} increased the party's luck by 3 points! \nThis effect lasts for 3 turns.")
+        print(f"\n{mage["Name"]} will skip their next turn.")
+
+
+def add_cooldown(chara):
+    """
+    Adds cooldown after character's special attack.
+    """
+
+    # Knight uses special attack
+    if chara == knight:
+        knight["Cooldown"] = 2
+        print(
+            f"\n{knight["Name"]}'s special attack is on cooldown for 2 turns.")
+
+    # Warrior uses special attack
+    if chara == warrior:
+        warrior["Cooldown"] = 2
+        print(
+            f"\n{warrior["Name"]}'s special attack is on cooldown for 2 turns.")
 
 
 def flee(chara):
+    """
+    Removes a character from the party if they choose to flee.
+    """
+
     print(f"\n{chara["Name"]} has fled the battle!")
     global party
     party.remove(chara)
@@ -350,7 +416,7 @@ def flee(chara):
 
 def party_turn():
     """
-    Party's Turn
+    Party's Turn, allows player to choose actions for all characters in the party.
     """
 
     print("\n" + "==".center(35, "=") + "\n")
@@ -359,21 +425,31 @@ def party_turn():
     # Gives turn to all characters in party
     for chara in party:
         # Checks the buff effect duration
-        chara_buff(chara)
+        check = chara_buff(chara)
 
         # Display current status of all characters
         display_status()
         action = 0
+        invalid = True
+
+        # Displays message if buffs or cooldowns have expired
+        buff_message(chara, check)
 
         # Skips Mage's turn after applying luck buff
         if chara == mage and mage["Buff_LUCK"] == 2:
             print(f"\n{chara["Name"]} will skip this turn.")
             continue
 
+        # Check if current character's special attacks are on cooldown
+        if (chara == knight or chara == warrior) and chara["Cooldown"] != 0:
+            cooldown = True
+        else:
+            cooldown = False
+
         print(f"\nIt is {chara["Name"]}'s turn.")
 
         # Loop for validating player input
-        while action not in [1, 2, 3, 4]:
+        while invalid:
             try:
                 # Displays list of all possible character actions
                 print(f"\nActions:")
@@ -381,11 +457,21 @@ def party_turn():
                     print(f" {act}")
 
                 action = int(input(f"\nChoose {chara["Name"]}'s action: "))
+
+                # Asks for different action if special attack in cooldown
+                if cooldown and action == 2:
+                    invalid = True
+                else:
+                    invalid = False
             except ValueError:
                 action = 0
+                invalid = True
 
             if action == 0 or action not in [1, 2, 3, 4]:
                 print("\nThat is not an option. Please enter a valid option.")
+            # Asks for different action if special attack in cooldown
+            elif cooldown and action == 2:
+                print(f"\n{chara["Name"]}'s special attack is on cooldown. Please enter a different option.")
 
         # Removes character from party if they choose to Flee
         if action == 4:
@@ -402,10 +488,12 @@ def party_turn():
             if chara == knight:
                 dmg = knight_atk(roll)
                 party_damage(chara, dmg)
+                add_cooldown(chara)
 
             if chara == warrior:
                 warrior_atk(roll)
                 party_damage(chara, dmg)
+                add_cooldown(chara)
 
             if chara == mage:
                 chara_heal(mage, roll)
