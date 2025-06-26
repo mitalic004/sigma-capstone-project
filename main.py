@@ -30,7 +30,7 @@ mage = {
     "HP": 100,
     "Max_HP": 100,
     "ATK": 8,
-    "DEF": 15,
+    "DEF": 20,
     "LUCK": 0,
     "Buff_LUCK": 0,
     "Actions": ["1. Attack the dragon.", "2. Heal the party.", "3. Increase the party's luck for 2 turns. (Skip next turn.)", "4. Flee."]
@@ -267,21 +267,21 @@ def dragon_atk():
 
     # Display outcome, no damage dealt if less than character defence
     for chara in party_hit:
-        dmg -= chara["DEF"]
-        if dmg <= 0:
+        hit = dmg - chara["DEF"]
+        if hit <= 0:
             print(
                 f"{chara["Name"]} defended against the attack! The dragon dealt no damage.")
         else:
-            chara["HP"] -= dmg
+            chara["HP"] -= hit
             # Set character HP to 0 if negative
             if chara["HP"] < 0:
                 chara["HP"] = 0
                 print(
-                    f"The dragon dealt {dmg} damage to {chara["Name"]}! {chara["Name"]} has fallen!")
+                    f"The dragon dealt {hit} damage to {chara["Name"]}! {chara["Name"]} has fallen!")
                 party.remove(chara)
             else:
                 print(
-                    f"The dragon dealt {dmg} damage to {chara["Name"]}! Their HP is {chara["HP"]}.")
+                    f"The dragon dealt {hit} damage to {chara["Name"]}! Their HP is {chara["HP"]}.")
 
 
 def chara_buff(chara):
@@ -334,27 +334,6 @@ def chara_buff(chara):
                 return 0
 
 
-def buff_message(chara, check):
-    """
-    Displays message to inform player of character buff or cooldown expiring
-    """
-
-    # Display message for buff expiring
-    if check == 1:
-        if chara == knight:
-            print(f"\n{chara["Name"]}'s attack buff has expired.")
-
-        if chara == warrior:
-            print(f"\n{chara["Name"]}'s defence buff has expired.")
-        
-        if chara == mage:
-            print(f"\n{chara["Name"]}'s luck buff has expired.")
-
-    # Display message for cooldown expiring
-    if check == 2:
-        print(f"\n{chara["Name"]}'s special attack is off cooldown and can be used.")
-
-
 def add_buff(chara):
     """
     Applies a buff depending on the character.
@@ -399,6 +378,27 @@ def add_cooldown(chara):
         warrior["Cooldown"] = 2
         print(
             f"\n{warrior["Name"]}'s special attack is on cooldown for 2 turns.")
+
+
+def buff_message(chara, check):
+    """
+    Displays message to inform player of character buff or cooldown expiring
+    """
+
+    # Display message for buff expiring
+    if check == 1:
+        if chara == knight:
+            print(f"\n{chara["Name"]}'s attack buff has expired.")
+
+        if chara == warrior:
+            print(f"\n{chara["Name"]}'s defence buff has expired.")
+
+        if chara == mage:
+            print(f"\n{chara["Name"]}'s luck buff has expired.")
+
+    # Display message for cooldown expiring
+    if check == 2:
+        print(f"\n{chara["Name"]}'s special attack is off cooldown and can be used.")
 
 
 def flee(chara):
@@ -491,7 +491,7 @@ def party_turn():
                 add_cooldown(chara)
 
             if chara == warrior:
-                warrior_atk(roll)
+                dmg = warrior_atk(roll)
                 party_damage(chara, dmg)
                 add_cooldown(chara)
 
