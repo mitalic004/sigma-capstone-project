@@ -61,10 +61,10 @@ def display_status():
     # Adds all characters in party to display
     for chara in party:
         if chara is party[-1]:
-            party_stats_chara += f"  {chara["Name"]:<7}"
-            party_stats_hp += f"  HP: {chara["HP"]:<7}"
-            party_stats_atk += f"  ATK: {chara["ATK"]:<7}"
-            party_stats_def += f"  DEF: {chara["DEF"]:<7}"
+            party_stats_chara += f"  {chara["Name"]:<10}"
+            party_stats_hp += f"  HP: {chara["HP"]:<10}"
+            party_stats_atk += f"  ATK: {chara["ATK"]:<10}"
+            party_stats_def += f"  DEF: {chara["DEF"]:<10}"
         else:
             party_stats_chara += f"  {chara["Name"]:<7}\t|"
             party_stats_hp += f"  HP: {chara["HP"]:<7}\t|"
@@ -75,7 +75,7 @@ def display_status():
     width = len(party_stats_hp)
 
     # Display Party Status
-    print("==".center(width, "=") + "\n")
+    print("\n" + "==".center(width, "=") + "\n")
     print("~ Party Status ~".center(width, "~") + "\n")
     print(party_stats_chara)
     print("_".center((width), "_") + "\n")
@@ -120,29 +120,29 @@ def chara_heal(chara, roll):
 
     # Checks which character is healing
     if chara == dragon:
-        heal_list += dragon
+        heal_list.append(dragon)
         print(f"\n{chara["Name"]} healed itself.")
     else:
         # Mage heals all characters in the party
-        heal_list += party
+        heal_list.extend(party)
         print(f"\n{chara["Name"]} healed the party.")
 
     # Calculates healing for characters
-    for chara in heal_list:
-        if chara["HP"] == chara["Max_HP"]:
+    for ch in heal_list:
+        if ch["HP"] == ch["Max_HP"]:
             # Display outcome if character is already at max hp
             print(
-                f"\n{chara["Name"]} is already at max HP! No HP was restored.")
+                f"\n{ch["Name"]} is already at max HP! No HP was restored.")
         else:
             # Calculate healing, cannot go over max HP
-            chara["HP"] += heal
-            if chara["HP"] > chara["Max_HP"]:
-                heal -= chara["HP"] - chara["Max_HP"]
-                chara["HP"] = chara["Max_HP"]
+            ch["HP"] += heal
+            if ch["HP"] > ch["Max_HP"]:
+                heal -= ch["HP"] - ch["Max_HP"]
+                ch["HP"] = ch["Max_HP"]
 
             # Display outcome
             print(
-                f"\n {chara["Name"]} restored {heal} HP! {chara["Name"]} now has {chara["HP"]} HP.")
+                f"\n{ch["Name"]} restored {heal} HP! {ch["Name"]} now has {ch["HP"]} HP.")
 
 
 def party_atk(chara):
@@ -251,16 +251,16 @@ def dragon_atk():
     # Calculate damage if dragon attacks
     if action < 4:
         party_hit.extend(party)
-        print("\nThe dragon attacked the party with a tail swipe.")
+        print("\nThe dragon attacked the party with a tail swipe.\n")
         dmg = dragon["ATK"] + roll
     elif action < 6:
         party_hit.append(dragon_target())
         print(
-            f"\nThe dragon attacked {party_hit[0]["Name"]} with a claw scratch.")
+            f"\nThe dragon attacked {party_hit[0]["Name"]} with a claw scratch.\n")
         dmg = dragon["ATK"] + roll * 2
     elif action == 6:
         party_hit.extend(party)
-        print("\nThe dragon attacked the party with fire breath.")
+        print("\nThe dragon attacked the party with fire breath.\n")
         dmg = dragon["ATK"] + roll * 3
 
     # Display outcome, no damage dealt if less than character defence
@@ -276,7 +276,7 @@ def dragon_atk():
                 chara["HP"] = 0
                 print(
                     f"The dragon dealt {dmg} damage to {chara["Name"]}! {chara["Name"]} has fallen!")
-                party -= chara
+                party.remove(chara)
             else:
                 print(
                     f"The dragon dealt {dmg} damage to {chara["Name"]}! Their HP is {chara["HP"]}.")
@@ -353,6 +353,7 @@ def party_turn():
     Party's Turn
     """
 
+    print("\n" + "==".center(35, "=") + "\n")
     print("\nIt is the party's turn.\n")
 
     # Gives turn to all characters in party
@@ -363,6 +364,11 @@ def party_turn():
         # Display current status of all characters
         display_status()
         action = 0
+
+        # Skips Mage's turn after applying luck buff
+        if chara == mage and mage["Buff_LUCK"] == 2:
+            print(f"\n{chara["Name"]} will skip this turn.")
+            continue
 
         print(f"\nIt is {chara["Name"]}'s turn.")
 
@@ -407,12 +413,17 @@ def party_turn():
         elif action == 3:
             add_buff(chara)
 
+        # Ends loop if Dragon is defeated
+        if dragon["HP"] == 0:
+            break
+
 
 def dragon_turn():
     """
     Dragon's Turn
     """
 
+    print("\n" + "==".center(35, "=") + "\n")
     print("\nIt is the dragon's turn.")
 
     # Randomise dragon attack, more likely to do less damaging attacks
