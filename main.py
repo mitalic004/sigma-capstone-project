@@ -396,7 +396,7 @@ def expire_message(chara, buff_check, cooldown_check):
     """
 
     # Display message for buff expiring
-    if buff_check == True:
+    if buff_check:
         if chara == knight:
             print(f"\n{chara['Name']}'s attack buff has expired.")
 
@@ -407,7 +407,7 @@ def expire_message(chara, buff_check, cooldown_check):
             print(f"\n{chara['Name']}'s luck buff has expired.")
 
     # Display message for cooldown expiring
-    if cooldown_check == True:
+    if cooldown_check:
         print(
             f"\n{chara['Name']}'s special attack is off cooldown and can be used.")
 
