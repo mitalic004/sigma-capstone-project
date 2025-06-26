@@ -63,15 +63,15 @@ def display_status():
     # Adds all characters in party to display
     for chara in party:
         if chara is party[-1]:
-            party_stats_chara += f"  {chara["Name"]:<10}"
-            party_stats_hp += f"  HP: {chara["HP"]:<10}"
-            party_stats_atk += f"  ATK: {chara["ATK"]:<10}"
-            party_stats_def += f"  DEF: {chara["DEF"]:<10}"
+            party_stats_chara += f"  {chara['Name']:<10}"
+            party_stats_hp += f"  HP: {chara['HP']:<10}"
+            party_stats_atk += f"  ATK: {chara['ATK']:<10}"
+            party_stats_def += f"  DEF: {chara['DEF']:<10}"
         else:
-            party_stats_chara += f"  {chara["Name"]:<7}\t|"
-            party_stats_hp += f"  HP: {chara["HP"]:<7}\t|"
-            party_stats_atk += f"  ATK: {chara["ATK"]:<7}\t|"
-            party_stats_def += f"  DEF: {chara["DEF"]:<7}\t|"
+            party_stats_chara += f"  {chara['Name']:<7}\t|"
+            party_stats_hp += f"  HP: {chara['HP']:<7}\t|"
+            party_stats_atk += f"  ATK: {chara['ATK']:<7}\t|"
+            party_stats_def += f"  DEF: {chara['DEF']:<7}\t|"
 
     # Calculate width and generate separating lines
     width = len(party_stats_hp)
@@ -87,7 +87,7 @@ def display_status():
     print("-".center(width, "-") + "\n")
 
     # Display Dragon Status
-    dragon_stats = f"  HP: {dragon["HP"]} \n  ATK: {dragon["ATK"]} \n  DEF: {dragon["DEF"]} \n"
+    dragon_stats = f"  HP: {dragon['HP']} \n  ATK: {dragon['ATK']} \n  DEF: {dragon['DEF']} \n"
     print("~ Dragon Status ~".center(len(dragon_stats), "~") + "\n")
     print(dragon_stats + "\n")
     # print(separator)
@@ -102,9 +102,9 @@ def party_luck(roll):
     Check if party luck is buffed and add to character roll.
     """
 
-    if mage["LUCK"] != 0:
+    if mage['LUCK'] != 0:
         print(f"Luck boost is active!")
-        roll += mage["LUCK"]
+        roll += mage['LUCK']
 
     return roll
 
@@ -116,35 +116,35 @@ def chara_heal(chara, roll):
 
     # Roll dice for character
     roll = random.randint(1, 6)
-    print(f"\n{chara["Name"]} rolled a {roll}.")
+    print(f"\n{chara['Name']} rolled a {roll}.")
     heal = roll * 5
     heal_list = []
 
     # Checks which character is healing
     if chara == dragon:
         heal_list.append(dragon)
-        print(f"\n{chara["Name"]} healed itself.")
+        print(f"\n{chara['Name']} healed itself.")
     else:
         # Mage heals all characters in the party
         heal_list.extend(party)
-        print(f"\n{chara["Name"]} healed the party.")
+        print(f"\n{chara['Name']} healed the party.")
 
     # Calculates healing for characters
     for ch in heal_list:
-        if ch["HP"] == ch["Max_HP"]:
+        if ch['HP'] == ch['Max_HP']:
             # Display outcome if character is already at max hp
             print(
-                f"\n{ch["Name"]} is already at max HP! No HP was restored.")
+                f"\n{ch['Name']} is already at max HP! No HP was restored.")
         else:
             # Calculate healing, cannot go over max HP
-            ch["HP"] += heal
-            if ch["HP"] > ch["Max_HP"]:
-                heal -= ch["HP"] - ch["Max_HP"]
-                ch["HP"] = ch["Max_HP"]
+            ch['HP'] += heal
+            if ch['HP'] > ch['Max_HP']:
+                heal -= ch['HP'] - ch['Max_HP']
+                ch['HP'] = ch['Max_HP']
 
             # Display outcome
             print(
-                f"\n{ch["Name"]} restored {heal} HP! {ch["Name"]} now has {ch["HP"]} HP.")
+                f"\n{ch['Name']} restored {heal} HP! {ch['Name']} now has {ch['HP']} HP.")
 
 
 def party_atk(chara):
@@ -154,14 +154,14 @@ def party_atk(chara):
 
     # Roll dice for character
     roll = random.randint(1, 6)
-    print(f"\n{chara["Name"]} rolled a {roll}.")
+    print(f"\n{chara['Name']} rolled a {roll}.")
     roll = party_luck(roll)
 
     # Calculate damage
-    dmg = chara["ATK"] * roll
-    dmg -= dragon["DEF"]
+    dmg = chara['ATK'] * roll
+    dmg -= dragon['DEF']
 
-    print(f"\n{chara["Name"]} attacked the dragon.")
+    print(f"\n{chara['Name']} attacked the dragon.")
 
     return dmg
 
@@ -174,14 +174,14 @@ def party_damage(chara, dmg):
     # Display outcome, no damage dealt if less than dragon defence
     if dmg <= 0:
         print(
-            f"The dragon defended itself! {chara["Name"]} dealt no damage.")
+            f"The dragon defended itself! {chara['Name']} dealt no damage.")
     else:
-        dragon["HP"] -= dmg
+        dragon['HP'] -= dmg
         # Set dragon HP to 0 if negative
-        if dragon["HP"] < 0:
-            dragon["HP"] = 0
+        if dragon['HP'] < 0:
+            dragon['HP'] = 0
         print(
-            f"{chara["Name"]} dealt {dmg} damage! The dragon's HP is {dragon["HP"]}.")
+            f"{chara['Name']} dealt {dmg} damage! The dragon's HP is {dragon['HP']}.")
 
 
 def knight_atk(roll):
@@ -190,14 +190,14 @@ def knight_atk(roll):
     """
 
     # Roll dice for character
-    print(f"\n{knight["Name"]} rolled a {roll}.")
+    print(f"\n{knight['Name']} rolled a {roll}.")
     roll = party_luck(roll)
 
     # Calculate damage
-    dmg = (knight["ATK"] + 5) * roll
-    dmg -= dragon["DEF"]
+    dmg = (knight['ATK'] + 5) * roll
+    dmg -= dragon['DEF']
 
-    print(f"\n{knight["Name"]} used True Strike to attack the dragon.")
+    print(f"\n{knight['Name']} used True Strike to attack the dragon.")
 
     return dmg
 
@@ -208,14 +208,14 @@ def warrior_atk(roll):
     """
 
     # Roll dice for character
-    print(f"\n{warrior["Name"]} rolled a {roll}.")
+    print(f"\n{warrior['Name']} rolled a {roll}.")
     roll = party_luck(roll)
 
     # Calculate damage
-    dmg = warrior["DEF"] + (roll * 10)
-    dmg -= dragon["DEF"]
+    dmg = warrior['DEF'] + (roll * 10)
+    dmg -= dragon['DEF']
 
-    print(f"\n{warrior["Name"]} used Berserk Charge to attack the dragon.")
+    print(f"\n{warrior['Name']} used Berserk Charge to attack the dragon.")
 
     return dmg
 
@@ -225,7 +225,7 @@ def dragon_target():
     Calculates which party member to target during a dragon attack.
     """
 
-    if warrior["Buff_DEF"] != 0:
+    if warrior['Buff_DEF'] != 0:
         target = random.randint(1, 5)
     else:
         target = random.randint(1, 3)
@@ -254,34 +254,34 @@ def dragon_atk():
     if action < 4:
         party_hit.extend(party)
         print("\nThe dragon attacked the party with a tail swipe.\n")
-        dmg = dragon["ATK"] + roll
+        dmg = dragon['ATK'] + roll
     elif action < 6:
         party_hit.append(dragon_target())
         print(
-            f"\nThe dragon attacked {party_hit[0]["Name"]} with a claw scratch.\n")
-        dmg = dragon["ATK"] + roll * 2
+            f"\nThe dragon attacked {party_hit[0]['Name']} with a claw scratch.\n")
+        dmg = dragon['ATK'] + roll * 2
     elif action == 6:
         party_hit.extend(party)
         print("\nThe dragon attacked the party with fire breath.\n")
-        dmg = dragon["ATK"] + roll * 3
+        dmg = dragon['ATK'] + roll * 3
 
     # Display outcome, no damage dealt if less than character defence
     for chara in party_hit:
-        hit = dmg - chara["DEF"]
+        hit = dmg - chara['DEF']
         if hit <= 0:
             print(
-                f"{chara["Name"]} defended against the attack! The dragon dealt no damage.")
+                f"{chara['Name']} defended against the attack! The dragon dealt no damage.")
         else:
-            chara["HP"] -= hit
+            chara['HP'] -= hit
             # Set character HP to 0 if negative
-            if chara["HP"] < 0:
-                chara["HP"] = 0
+            if chara['HP'] < 0:
+                chara['HP'] = 0
                 print(
-                    f"The dragon dealt {hit} damage to {chara["Name"]}! {chara["Name"]} has fallen!")
+                    f"The dragon dealt {hit} damage to {chara['Name']}! {chara['Name']} has fallen!")
                 party.remove(chara)
             else:
                 print(
-                    f"The dragon dealt {hit} damage to {chara["Name"]}! Their HP is {chara["HP"]}.")
+                    f"The dragon dealt {hit} damage to {chara['Name']}! Their HP is {chara['HP']}.")
 
 
 def chara_buff(chara):
@@ -291,44 +291,44 @@ def chara_buff(chara):
 
     # Check Knight buff effect duration & special attack cooldown
     if chara == knight:
-        if knight["Buff_ATK"] != 0:
-            knight["Buff_ATK"] -= 1
-            if knight["Buff_ATK"] == 0:
-                knight["ATK"] = 10
+        if knight['Buff_ATK'] != 0:
+            knight['Buff_ATK'] -= 1
+            if knight['Buff_ATK'] == 0:
+                knight['ATK'] = 10
                 return 1
             else:
                 return 0
 
-        if knight["Cooldown"] != 0:
-            knight["Cooldown"] -= 1
-            if knight["Cooldown"] == 0:
+        if knight['Cooldown'] != 0:
+            knight['Cooldown'] -= 1
+            if knight['Cooldown'] == 0:
                 return 2
             else:
                 return 0
 
     # Check Warrior buff effect duration & special attack cooldown
     if chara == warrior:
-        if warrior["Buff_DEF"] != 0:
-            warrior["Buff_DEF"] -= 1
-            if warrior["Buff_DEF"] == 0:
-                warrior["DEF"] = 25
+        if warrior['Buff_DEF'] != 0:
+            warrior['Buff_DEF'] -= 1
+            if warrior['Buff_DEF'] == 0:
+                warrior['DEF'] = 25
                 return 1
             else:
                 return 0
 
-        if warrior["Cooldown"] != 0:
-            warrior["Cooldown"] -= 1
-            if warrior["Cooldown"] == 0:
+        if warrior['Cooldown'] != 0:
+            warrior['Cooldown'] -= 1
+            if warrior['Cooldown'] == 0:
                 return 2
             else:
                 return 0
 
     # Check Mage buff effect duration
     if chara == mage:
-        if mage["Buff_LUCK"] != 0:
-            mage["Buff_LUCK"] -= 1
-            if mage["Buff_LUCK"] == 0:
-                mage["LUCK"] = 0
+        if mage['Buff_LUCK'] != 0:
+            mage['Buff_LUCK'] -= 1
+            if mage['Buff_LUCK'] == 0:
+                mage['LUCK'] = 0
                 return 1
             else:
                 return 0
@@ -341,25 +341,25 @@ def add_buff(chara):
 
     # Knight buffs their attack
     if chara == knight:
-        knight["Buff_ATK"] = 3
-        knight["ATK"] = 15
+        knight['Buff_ATK'] = 3
+        knight['ATK'] = 15
         print(
-            f"\n{knight["Name"]} used Blessed Sword! \n{knight["Name"]} increased their attack by 5 points! \nThis effect lasts for 2 turns.")
+            f"\n{knight['Name']} used Blessed Sword! \n{knight['Name']} increased their attack by 5 points! \nThis effect lasts for 2 turns.")
 
     # Warrior buffs their defence
     if chara == warrior:
-        warrior["Buff_DEF"] = 3
-        warrior["DEF"] = 30
+        warrior['Buff_DEF'] = 3
+        warrior['DEF'] = 30
         print(
-            f"\n{warrior["Name"]} used Stalwart Guardian! \n{warrior["Name"]} taunted the dragon and increased their defence by 5 points! \nThis effect lasts for 2 turns.")
+            f"\n{warrior['Name']} used Stalwart Guardian! \n{warrior['Name']} taunted the dragon and increased their defence by 5 points! \nThis effect lasts for 2 turns.")
 
     # Mage buffs party luck
     if chara == mage:
-        mage["Buff_LUCK"] = 3
-        mage["LUCK"] = 3
+        mage['Buff_LUCK'] = 3
+        mage['LUCK'] = 3
         print(
-            f"\n{mage["Name"]} used Fortune's Favour! \n{mage["Name"]} increased the party's luck by 3 points! \nThis effect lasts for 3 turns.")
-        print(f"\n{mage["Name"]} will skip their next turn.")
+            f"\n{mage['Name']} used Fortune's Favour! \n{mage['Name']} increased the party's luck by 3 points! \nThis effect lasts for 3 turns.")
+        print(f"\n{mage['Name']} will skip their next turn.")
 
 
 def add_cooldown(chara):
@@ -369,15 +369,15 @@ def add_cooldown(chara):
 
     # Knight uses special attack
     if chara == knight:
-        knight["Cooldown"] = 2
+        knight['Cooldown'] = 2
         print(
-            f"\n{knight["Name"]}'s special attack is on cooldown for 2 turns.")
+            f"\n{knight['Name']}'s special attack is on cooldown for 2 turns.")
 
     # Warrior uses special attack
     if chara == warrior:
-        warrior["Cooldown"] = 2
+        warrior['Cooldown'] = 2
         print(
-            f"\n{warrior["Name"]}'s special attack is on cooldown for 2 turns.")
+            f"\n{warrior['Name']}'s special attack is on cooldown for 2 turns.")
 
 
 def buff_message(chara, check):
@@ -388,17 +388,18 @@ def buff_message(chara, check):
     # Display message for buff expiring
     if check == 1:
         if chara == knight:
-            print(f"\n{chara["Name"]}'s attack buff has expired.")
+            print(f"\n{chara['Name']}'s attack buff has expired.")
 
         if chara == warrior:
-            print(f"\n{chara["Name"]}'s defence buff has expired.")
+            print(f"\n{chara['Name']}'s defence buff has expired.")
 
         if chara == mage:
-            print(f"\n{chara["Name"]}'s luck buff has expired.")
+            print(f"\n{chara['Name']}'s luck buff has expired.")
 
     # Display message for cooldown expiring
     if check == 2:
-        print(f"\n{chara["Name"]}'s special attack is off cooldown and can be used.")
+        print(
+            f"\n{chara['Name']}'s special attack is off cooldown and can be used.")
 
 
 def flee(chara):
@@ -406,7 +407,7 @@ def flee(chara):
     Removes a character from the party if they choose to flee.
     """
 
-    print(f"\n{chara["Name"]} has fled the battle!")
+    print(f"\n{chara['Name']} has fled the battle!")
     global party
     party.remove(chara)
 
@@ -436,27 +437,27 @@ def party_turn():
         buff_message(chara, check)
 
         # Skips Mage's turn after applying luck buff
-        if chara == mage and mage["Buff_LUCK"] == 2:
-            print(f"\n{chara["Name"]} will skip this turn.")
+        if chara == mage and mage['Buff_LUCK'] == 2:
+            print(f"\n{chara['Name']} will skip this turn.")
             continue
 
         # Check if current character's special attacks are on cooldown
-        if (chara == knight or chara == warrior) and chara["Cooldown"] != 0:
+        if (chara == knight or chara == warrior) and chara['Cooldown'] != 0:
             cooldown = True
         else:
             cooldown = False
 
-        print(f"\nIt is {chara["Name"]}'s turn.")
+        print(f"\nIt is {chara['Name']}'s turn.")
 
         # Loop for validating player input
         while invalid:
             try:
                 # Displays list of all possible character actions
                 print(f"\nActions:")
-                for act in chara["Actions"]:
+                for act in chara['Actions']:
                     print(f" {act}")
 
-                action = int(input(f"\nChoose {chara["Name"]}'s action: "))
+                action = int(input(f"\nChoose {chara['Name']}'s action: "))
 
                 # Asks for different action if special attack in cooldown
                 if cooldown and action == 2:
@@ -471,7 +472,8 @@ def party_turn():
                 print("\nThat is not an option. Please enter a valid option.")
             # Asks for different action if special attack in cooldown
             elif cooldown and action == 2:
-                print(f"\n{chara["Name"]}'s special attack is on cooldown. Please enter a different option.")
+                print(
+                    f"\n{chara['Name']}'s special attack is on cooldown. Please enter a different option.")
 
         # Removes character from party if they choose to Flee
         if action == 4:
@@ -502,7 +504,7 @@ def party_turn():
             add_buff(chara)
 
         # Ends loop if Dragon is defeated
-        if dragon["HP"] == 0:
+        if dragon['HP'] == 0:
             break
 
 
@@ -543,7 +545,7 @@ def main_game():
             break
 
         # Breaks loop if dragon is defeated, player wins
-        if dragon["HP"] == 0:
+        if dragon['HP'] == 0:
             end = 1
             break
 
